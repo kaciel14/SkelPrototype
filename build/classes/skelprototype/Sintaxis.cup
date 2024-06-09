@@ -1,0 +1,170 @@
+package skelprototype;
+
+import java_cup.runtime.Symbol;
+
+parser code
+{:
+    private Symbol s;
+    
+    public void syntax_error(Symbol s){
+        this.s = s;
+    }
+
+    public Symbol getS(){
+        return this.s;
+}
+:};
+
+terminal Entero,Decimal,Import,Clase,Identificador,Coma,Comillas,Booleano,Cadena,
+ParentesisApertura,ParentesisCierre,LlaveApertura,LlaveCierre,Relacional,TrueFalse,
+FinDeLinea,If,Else,Numero,NumeroDecimal,Asigna,Texto,Arroba,Residuo,Multiplicacion,
+Caracter,NOT,Resta,Division,OR,AND,Suma,Punto,MetodoVacio,MetodoRetorno,Retorno,ERROR;
+
+non terminal INICIO,METODO, PARAM, METODO_PARAM, SENTENCIA, DECLARACION, IF, IF_ELSE, SENTENCIA_BOOLEANA,
+LIBRERIA, DIR_LIBRERIA, RETORNO, GRUPO_METODOS, OPERACIONES, Operador, Operando;
+
+start with INICIO;
+
+INICIO ::= 
+    LIBRERIA
+    Clase Identificador LlaveApertura GRUPO_METODOS LlaveCierre
+;
+
+METODO ::=
+    MetodoVacio Identificador ParentesisApertura ParentesisCierre LlaveApertura 
+    SENTENCIA LlaveCierre |
+    MetodoVacio Identificador ParentesisApertura METODO_PARAM ParentesisCierre LlaveApertura 
+    SENTENCIA LlaveCierre |
+
+
+    MetodoRetorno Entero Identificador ParentesisApertura ParentesisCierre LlaveApertura
+    SENTENCIA RETORNO LlaveCierre |
+    MetodoRetorno Entero Identificador ParentesisApertura METODO_PARAM ParentesisCierre LlaveApertura
+    SENTENCIA RETORNO LlaveCierre |
+    MetodoRetorno Cadena Identificador ParentesisApertura ParentesisCierre LlaveApertura
+    SENTENCIA RETORNO LlaveCierre |
+    MetodoRetorno Cadena Identificador ParentesisApertura METODO_PARAM ParentesisCierre LlaveApertura
+    SENTENCIA RETORNO LlaveCierre |
+    MetodoRetorno Decimal Identificador ParentesisApertura ParentesisCierre LlaveApertura
+    SENTENCIA RETORNO LlaveCierre |
+    MetodoRetorno Decimal Identificador ParentesisApertura METODO_PARAM ParentesisCierre LlaveApertura
+    SENTENCIA RETORNO LlaveCierre
+;
+
+GRUPO_METODOS ::=
+    METODO |
+    METODO GRUPO_METODOS
+;
+
+PARAM ::=
+    Entero Identificador | 
+    Cadena Identificador |
+    Decimal Identificador |
+    Booleano Identificador
+ ;
+
+METODO_PARAM ::=
+    PARAM |
+    PARAM Coma METODO_PARAM
+;
+
+SENTENCIA ::= 
+    SENTENCIA DECLARACION |
+    DECLARACION |
+    SENTENCIA IF | 
+    IF |
+    SENTENCIA IF_ELSE |
+    IF_ELSE
+;
+
+
+DECLARACION ::= 
+    Entero Identificador FinDeLinea | 
+    Entero Identificador Asigna Numero FinDeLinea |
+    Entero Identificador Asigna Identificador FinDeLinea |
+    Entero OPERACIONES |
+    Cadena Identificador FinDeLinea |
+    Cadena Identificador Asigna Texto FinDeLinea |
+    Cadena OPERACIONES |
+    Decimal Identificador FinDeLinea |
+    Decimal Identificador Asigna NumeroDecimal FinDeLinea |
+    Decimal Identificador Asigna Numero FinDeLinea |
+    Decimal Identificador Asigna Identificador FinDeLinea |
+    Decimal OPERACIONES |
+    Booleano Identificador FinDeLinea |
+    Booleano Identificador Asigna TrueFalse FinDeLinea |
+    Booleano Identificador Asigna Identificador FinDeLinea |
+    Identificador Asigna Identificador FinDeLinea |
+    Identificador Asigna Numero FinDeLinea |
+    Identificador Asigna NumeroDecimal FinDeLinea |
+    Identificador Asigna Texto FinDeLinea |
+    Identificador Asigna Comillas Comillas FinDeLinea |
+    OPERACIONES
+;
+
+IF ::= 
+    If ParentesisApertura SENTENCIA_BOOLEANA ParentesisCierre LlaveApertura SENTENCIA LlaveCierre
+;
+
+SENTENCIA_BOOLEANA ::= 
+    TrueFalse |
+    TrueFalse Relacional TrueFalse |
+    Identificador Relacional TrueFalse |
+    Identificador Relacional Numero |
+    Identificador Relacional NumeroDecimal |
+    Identificador Relacional Identificador |
+    Identificador Relacional Comillas Comillas |
+    Identificador Relacional Texto |
+    TrueFalse AND TrueFalse |
+    TrueFalse OR TrueFalse
+;
+
+
+IF_ELSE ::= 
+    IF Else LlaveApertura SENTENCIA LlaveCierre
+;
+
+LIBRERIA ::= 
+    Import DIR_LIBRERIA FinDeLinea
+;
+
+DIR_LIBRERIA ::= 
+    Identificador Punto Identificador |
+    Identificador Punto DIR_LIBRERIA |
+    Identificador Punto Multiplicacion
+;
+
+RETORNO ::=
+    Retorno Identificador FinDeLinea |
+    Retorno Numero FinDeLinea |
+    Retorno Texto FinDeLinea |
+    Retorno NumeroDecimal FinDeLinea 
+;
+
+OPERACIONES ::=
+    Identificador Asigna Operando FinDeLinea
+;
+
+Operador ::=
+    Suma Identificador |
+    Resta Identificador |
+    Multiplicacion Identificador |
+    Division Identificador |
+    Suma Numero |
+    Resta Numero |
+    Multiplicacion Numero |
+    Division Numero |
+    Suma NumeroDecimal |
+    Resta NumeroDecimal |
+    Multiplicacion NumeroDecimal |
+    Division NumeroDecimal |
+    Suma Texto 
+;
+
+Operando ::=
+    Identificador Operador |
+    Numero Operador |
+    Texto Operador |
+    NumeroDecimal Operador |
+    Operando Operador
+;

@@ -1,0 +1,13 @@
+@import lib.*;
+@class Clase{
+@void main(){
+int a turn 5;
+int b turn a + 1;
+String c turn "resultado " + b;
+dec d turn 0.5 + a;
+String x turn "decimal " + d;
+dec z turn d - 5;
+dec y turn a/5;
+b turn b*2;
+}
+}
